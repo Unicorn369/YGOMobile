@@ -81,7 +81,7 @@ void Game::process(irr::SEvent &event) {
 void Game::stopBGM() {
     ALOGD("cc game: stop bgm");
 	gMutex.lock();
-	soundManager->StopBGM();
+	soundManager.StopBGM();
 	gMutex.unlock();
 }
 
@@ -90,19 +90,19 @@ void Game::playBGM() {
 	gMutex.lock();
 	if(dInfo.isStarted) {
 		if(dInfo.isFinished && showcardcode == 1)
-			soundManager->PlayBGM(SoundManager::BGM::WIN);
+			soundManager.PlayBGM(BGM_WIN);
 		else if(dInfo.isFinished && (showcardcode == 2 || showcardcode == 3))
-			soundManager->PlayBGM(SoundManager::BGM::LOSE);
+			soundManager.PlayBGM(BGM_LOSE);
 		else if(dInfo.lp[0] > 0 && dInfo.lp[0] <= dInfo.lp[1] / 2)
-			soundManager->PlayBGM(SoundManager::BGM::DISADVANTAGE);
+			soundManager.PlayBGM(BGM_DISADVANTAGE);
 		else if(dInfo.lp[0] > 0 && dInfo.lp[0] >= dInfo.lp[1] * 2)
-			soundManager->PlayBGM(SoundManager::BGM::ADVANTAGE);
+			soundManager.PlayBGM(BGM_ADVANTAGE);
 		else
-			soundManager->PlayBGM(SoundManager::BGM::DUEL);
+			soundManager.PlayBGM(BGM_DUEL);
 	} else if(is_building) {
-		soundManager->PlayBGM(SoundManager::BGM::DECK);
+		soundManager.PlayBGM(BGM_DECK);
 	} else {
-		soundManager->PlayBGM(SoundManager::BGM::MENU);
+		soundManager.PlayBGM(BGM_MENU);
 	}
 	gMutex.unlock();
 }
@@ -672,7 +672,7 @@ bool Game::Initialize(ANDROID_APP app, irr::android::InitOptions *options) {
     scrSoundVolume = env->addScrollBar(true, Resize(posX + 110, posY, posX + 280, posY + 30), wSettings, SCROLL_VOLUME);
     scrSoundVolume->setMax(100);
     scrSoundVolume->setMin(0);
-    scrSoundVolume->setPos(gameConf.sound_volume);
+    scrSoundVolume->setPos(gameConf.sound_volume * 100);
     scrSoundVolume->setLargeStep(1);
     scrSoundVolume->setSmallStep(1);
     posY += 40;
@@ -681,7 +681,7 @@ bool Game::Initialize(ANDROID_APP app, irr::android::InitOptions *options) {
     scrMusicVolume = env->addScrollBar(true, Resize(posX + 110, posY, posX + 280, posY + 30), wSettings, SCROLL_VOLUME);
     scrMusicVolume->setMax(100);
     scrMusicVolume->setMin(0);
-    scrMusicVolume->setPos(gameConf.music_volume);
+    scrMusicVolume->setPos(gameConf.music_volume * 100);
     scrMusicVolume->setLargeStep(1);
     scrMusicVolume->setSmallStep(1);
     elmTabSystemLast = chkEnableMusic;
@@ -1279,8 +1279,7 @@ bool Game::Initialize(ANDROID_APP app, irr::android::InitOptions *options) {
 	btnCancelOrFinish = env->addButton(Resize_Y(3 + CARD_IMG_WIDTH, 205, 310, 255), 0, BUTTON_CANCEL_OR_FINISH, dataManager.GetSysString(1295));
         ChangeToIGUIImageButton(btnCancelOrFinish, imageManager.tButton_S, imageManager.tButton_S_pressed);
 	btnCancelOrFinish->setVisible(false);
-	soundManager = Utils::make_unique<SoundManager>();
-	if(!soundManager->Init((double)gameConf.sound_volume / 100, (double)gameConf.music_volume / 100, gameConf.enable_sound, gameConf.enable_music, nullptr)) {
+	if(!soundManager.Init()) {
 		chkEnableSound->setChecked(false);
 		chkEnableSound->setEnabled(false);
 		chkEnableSound->setVisible(false);
@@ -1833,11 +1832,13 @@ void Game::LoadConfig() {
 	gameConf.auto_save_replay = irr::android::getIntSetting(appMain, "auto_save_replay", 0);
 	gameConf.quick_animation = irr::android::getIntSetting(appMain, "quick_animation", 0);
 	gameConf.draw_single_chain = irr::android::getIntSetting(appMain, "draw_single_chain", 0);
+#ifdef YGOPRO_USE_AUDIO
 	gameConf.enable_sound = irr::android::getIntSetting(appMain, "enable_sound", 1);
-	gameConf.sound_volume = irr::android::getIntSetting(appMain, "sound_volume", 50);
+	gameConf.sound_volume = (double)irr::android::getIntSetting(appMain, "sound_volume", 50) / 100;
 	gameConf.enable_music = irr::android::getIntSetting(appMain, "enable_music", 1);
-	gameConf.music_volume = irr::android::getIntSetting(appMain, "music_volume", 50);
+	gameConf.music_volume = (double)irr::android::getIntSetting(appMain, "music_volume", 50) / 100;
 	gameConf.music_mode = irr::android::getIntSetting(appMain, "music_mode", 1);
+#endif
 	gameConf.use_lflist = irr::android::getIntSetting(appMain, "use_lflist", 1);
 	gameConf.chkDefaultShowChain = irr::android::getIntSetting(appMain, "chkDefaultShowChain", 0);
 	gameConf.hide_player_name = irr::android::getIntSetting(appMain, "chkHidePlayerName", 0);
@@ -1883,16 +1884,18 @@ void Game::SaveConfig() {
     irr::android::saveIntSetting(appMain, "quick_animation", gameConf.quick_animation);
 	gameConf.draw_single_chain = chkDrawSingleChain->isChecked() ? 1 : 0;
     irr::android::saveIntSetting(appMain, "draw_single_chain", gameConf.draw_single_chain);
+#ifdef YGOPRO_USE_AUDIO
 	gameConf.enable_sound = chkEnableSound->isChecked() ? 1 : 0;
     irr::android::saveIntSetting(appMain, "enable_sound", gameConf.enable_sound);
 	gameConf.enable_music = chkEnableMusic->isChecked() ? 1 : 0;
     irr::android::saveIntSetting(appMain, "enable_music", gameConf.enable_music);
 	gameConf.music_mode = chkMusicMode->isChecked() ? 1 : 0;
     irr::android::saveIntSetting(appMain, "music_mode", gameConf.music_mode);
-	gameConf.sound_volume = (double)scrSoundVolume->getPos();
-    irr::android::saveIntSetting(appMain, "sound_volume", gameConf.sound_volume);
-	gameConf.music_volume = (double)scrMusicVolume->getPos();
-    irr::android::saveIntSetting(appMain, "music_volume", gameConf.music_volume);
+	int vol = gameConf.sound_volume * 100;
+	irr::android::saveIntSetting(appMain, "sound_volume", vol);
+	vol = gameConf.music_volume * 100;
+    irr::android::saveIntSetting(appMain, "music_volume", vol);
+#endif
 	gameConf.use_lflist = chkLFlist->isChecked() ? 1 : 0;
     irr::android::saveIntSetting(appMain, "use_lflist", gameConf.use_lflist);
 	gameConf.chkDefaultShowChain = chkDefaultShowChain->isChecked() ? 1 : 0;
@@ -2023,7 +2026,7 @@ void Game::AddChatMsg(const wchar_t* msg, int player, bool play_sound) {
 	if(gameConf.hide_player_name && player < 4)
 		player = 10;
 	if(play_sound)
-		soundManager->PlaySoundEffect(SoundManager::SFX::CHAT);
+		soundManager.PlaySoundEffect(SOUND_CHAT);
 	switch(player) {
 	case 0: //from host
 		chatMsg[0].append(dInfo.hostname);

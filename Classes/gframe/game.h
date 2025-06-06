@@ -242,7 +242,6 @@ public:
 	static void DrawShadowText(irr::gui::CGUITTFont* font, const T& text, const irr::core::rect<irr::s32>& position, const irr::core::rect<irr::s32>& padding,
 		irr::video::SColor color = 0xffffffff, irr::video::SColor shadowcolor = 0xff000000, bool hcenter = false, bool vcenter = false, const irr::core::rect<irr::s32>* clip = nullptr);
 
-	std::unique_ptr<SoundManager> soundManager;
 	std::mutex gMutex;
 	Signal frameSignal;
 	Signal actionSignal;
@@ -300,7 +299,6 @@ public:
 	irr::video::IVideoDriver* driver;
 	irr::scene::ISceneManager* smgr;
 	irr::scene::ICameraSceneNode* camera;
-	std::vector<Utils::IrrArchiveHelper> archives;
 	//GUI
 	irr::gui::IGUIEnvironment* env;
 	irr::gui::CGUITTFont* guiFont;

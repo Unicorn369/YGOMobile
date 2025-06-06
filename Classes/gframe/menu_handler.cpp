@@ -115,9 +115,9 @@ bool MenuHandler::OnEvent(const irr::SEvent& event) {
 		switch(event.GUIEvent.EventType) {
 		case irr::gui::EGET_BUTTON_CLICKED: {
 			if(id < 110)
-				mainGame->soundManager->PlaySoundEffect(SoundManager::SFX::SOUND_MENU);
+				soundManager.PlaySoundEffect(SOUND_MENU);
 			else
-				mainGame->soundManager->PlaySoundEffect(SoundManager::SFX::BUTTON);
+				soundManager.PlaySoundEffect(SOUND_BUTTON);
 			switch(id) {
              case BUTTON_HP_DECK_SELECT: {
                  if (!mainGame->wQuery->isVisible()) {
@@ -130,7 +130,7 @@ bool MenuHandler::OnEvent(const irr::SEvent& event) {
                  break;
              }
 			case BUTTON_MODE_EXIT: {
-				mainGame->soundManager->StopBGM();
+				soundManager.StopBGM();
 				mainGame->SaveConfig();
 				mainGame->OnGameClose();
 				break;
@@ -170,7 +170,7 @@ bool MenuHandler::OnEvent(const irr::SEvent& event) {
 					int status = evutil_getaddrinfo(hostname, port, &hints, &answer);
 					if(status != 0) {
 						mainGame->gMutex.lock();
-						mainGame->soundManager->PlaySoundEffect(SoundManager::SFX::INFO);
+						soundManager.PlaySoundEffect(SOUND_INFO);
 						mainGame->addMessageBox(L"", dataManager.GetSysString(1412));
 						mainGame->gMutex.unlock();
 						break;
@@ -214,13 +214,13 @@ bool MenuHandler::OnEvent(const irr::SEvent& event) {
 				bot_mode = false;
 				BufferIO::CopyWideString(mainGame->ebServerName->getText(), mainGame->gameConf.gamename);
 				if(!NetServer::StartServer(mainGame->gameConf.serverport)) {
-					mainGame->soundManager->PlaySoundEffect(SoundManager::SFX::INFO);
+					soundManager.PlaySoundEffect(SOUND_INFO);
 					mainGame->env->addMessageBox(L"", dataManager.GetSysString(1402));
 					break;
 				}
 				if(!DuelClient::StartClient(0x7f000001, mainGame->gameConf.serverport)) {
 					NetServer::StopServer();
-					mainGame->soundManager->PlaySoundEffect(SoundManager::SFX::INFO);
+					soundManager.PlaySoundEffect(SOUND_INFO);
 					mainGame->env->addMessageBox(L"", dataManager.GetSysString(1402));
 					break;
 				}
@@ -265,7 +265,7 @@ bool MenuHandler::OnEvent(const irr::SEvent& event) {
 				if(mainGame->cbCategorySelect->getSelected() == -1 || mainGame->cbDeckSelect->getSelected() == -1 ||
 					!deckManager.LoadCurrentDeck(mainGame->cbCategorySelect, mainGame->cbDeckSelect)) {
 					mainGame->gMutex.lock();
-					mainGame->soundManager->PlaySoundEffect(SoundManager::SFX::INFO);
+					soundManager.PlaySoundEffect(SOUND_INFO);
 					mainGame->env->addMessageBox(L"", dataManager.GetSysString(1406));
 					mainGame->gMutex.unlock();
 					break;
@@ -462,13 +462,13 @@ bool MenuHandler::OnEvent(const irr::SEvent& event) {
 				snprintf(args, sizeof args, "%s%s%s", arg1, arg2, arg3);
                 irr::android::runWindbot(mainGame->appMain, args);
 				if(!NetServer::StartServer(mainGame->gameConf.serverport)) {
-					mainGame->soundManager->PlaySoundEffect(SoundManager::SFX::INFO);
+					soundManager.PlaySoundEffect(SOUND_INFO);
 					mainGame->env->addMessageBox(L"", dataManager.GetSysString(1402));	
 					break;
 					}
 				if(!DuelClient::StartClient(0x7f000001, mainGame->gameConf.serverport)) {
 					NetServer::StopServer();
-					mainGame->soundManager->PlaySoundEffect(SoundManager::SFX::INFO);
+					soundManager.PlaySoundEffect(SOUND_INFO);
 					mainGame->env->addMessageBox(L"", dataManager.GetSysString(1402));
 					break;
 				}
@@ -728,7 +728,7 @@ bool MenuHandler::OnEvent(const irr::SEvent& event) {
 						!deckManager.LoadCurrentDeck(mainGame->cbCategorySelect, mainGame->cbDeckSelect)) {
 						mainGame->gMutex.lock();
 						static_cast<irr::gui::IGUICheckBox*>(caller)->setChecked(false);
-						mainGame->soundManager->PlaySoundEffect(SoundManager::SFX::INFO);
+						soundManager.PlaySoundEffect(SOUND_INFO);
 						mainGame->env->addMessageBox(L"", dataManager.GetSysString(1406));
 						mainGame->gMutex.unlock();
 						break;
