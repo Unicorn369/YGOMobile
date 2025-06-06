@@ -24,6 +24,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+#include "evconfig-private.h"
 #include <stdint.h>
 
 #include <sys/param.h>
@@ -31,16 +32,19 @@
 #include <sys/syscall.h>
 #include <sys/epoll.h>
 #include <unistd.h>
-
-//http://androidxref.com/9.0.0_r3/xref/bionic/libc/bionic/sys_epoll.cpp
+#include <errno.h>
 
 int
 epoll_create(int size)
 {
-#ifdef __LP64__
-	return (int)(syscall(__NR_epoll_create1, size));
+#if !defined(__NR_epoll_create) && defined(__NR_epoll_create1)
+	if (size <= 0) {
+		errno = EINVAL;
+		return -1;
+	}
+	return (syscall(__NR_epoll_create1, 0));
 #else
-	return (int)(syscall(__NR_epoll_create, size));
+	return (syscall(__NR_epoll_create, size));
 #endif
 }
 
@@ -48,15 +52,15 @@ int
 epoll_ctl(int epfd, int op, int fd, struct epoll_event *event)
 {
 
-	return (int)(syscall(__NR_epoll_ctl, epfd, op, fd, event));
+	return (syscall(__NR_epoll_ctl, epfd, op, fd, event));
 }
 
 int
 epoll_wait(int epfd, struct epoll_event *events, int maxevents, int timeout)
 {
-#ifdef __LP64__
-	return (int)(syscall(__NR_epoll_pwait, epfd, events, maxevents, timeout, NULL, 0));
+#if !defined(__NR_epoll_wait) && defined(__NR_epoll_pwait)
+	return (syscall(__NR_epoll_pwait, epfd, events, maxevents, timeout, NULL, 0));
 #else
-	return (int)(syscall(__NR_epoll_wait, epfd, events, maxevents, timeout));
+	return (syscall(__NR_epoll_wait, epfd, events, maxevents, timeout));
 #endif
 }
