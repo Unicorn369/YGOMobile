@@ -41,10 +41,9 @@ LOCAL_C_INCLUDES := $(LOCAL_PATH) \
     				$(LOCAL_PATH)/android \
    					$(LOCAL_PATH)/include \
     				$(LOCAL_PATH)/../openssl \
-   					 $(LOCAL_PATH)/../openssl/include/
+   					$(LOCAL_PATH)/../openssl/include/
 
-LOCAL_EXPORT_C_INCLUDES := $(LOCAL_PATH)/include
-LOCAL_EXPORT_C_INCLUDES := $(LOCAL_PATH)/android
+LOCAL_EXPORT_C_INCLUDES := $(LOCAL_PATH)/include $(LOCAL_PATH)/android
 
 LOCAL_CFLAGS := -DHAVE_CONFIG_H -DANDROID -fvisibility=hidden -DUSE_DEBUG
 

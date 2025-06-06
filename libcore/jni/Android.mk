@@ -11,6 +11,8 @@ include $(CLEAR_VARS)
 LOCAL_MODULE := YGOMobile
 
 LOCAL_CFLAGS := -D_IRR_ANDROID_PLATFORM_ -pipe -fno-rtti -fno-exceptions -fstrict-aliasing -D_ANDROID -fPIC -DLUA_COMPAT_5_2
+LOCAL_CFLAGS += -DYGOPRO_USE_AUDIO -DYGOPRO_USE_MINIAUDIO -DYGOPRO_MINIAUDIO_SUPPORT_OPUS_VORBIS
+
 TARGET_FORMAT_STRING_CFLAGS := 
 
 LOCAL_CPPFLAGS := -std=c++14
@@ -29,13 +31,10 @@ ifeq ($(TARGET_ARCH_ABI), armeabi-v7a)
 LOCAL_CFLAGS += -mno-unaligned-access
 endif
  
-LOCAL_C_INCLUDES += $(LOCAL_PATH)
-LOCAL_C_INCLUDES := $(LOCAL_PATH)/../irrlicht/include
+LOCAL_C_INCLUDES := $(LOCAL_PATH)
+LOCAL_C_INCLUDES += $(LOCAL_PATH)/../irrlicht/include
 LOCAL_C_INCLUDES += $(LOCAL_PATH)/../irrlicht/source/Irrlicht
 LOCAL_C_INCLUDES += $(LOCAL_PATH)/../irrlicht/source/Irrlicht/Android
-LOCAL_C_INCLUDES += $(LOCAL_PATH)/../Classes/freetype/include
-LOCAL_C_INCLUDES += $(LOCAL_PATH)/../Classes/sqlite3
-LOCAL_C_INCLUDES += $(LOCAL_PATH)/../Classes/libevent/include
 
 LOCAL_SRC_FILES := $(LOCAL_PATH)/android/android_tools.cpp \
 				$(LOCAL_PATH)/android/xstring.cpp \
@@ -85,6 +84,7 @@ LOCAL_STATIC_LIBRARIES += clzma
 LOCAL_STATIC_LIBRARIES += cspmemvfs
 LOCAL_STATIC_LIBRARIES += sqlite3
 LOCAL_STATIC_LIBRARIES += libft2
+LOCAL_STATIC_LIBRARIES += miniaudio
 
 include $(BUILD_SHARED_LIBRARY)
 $(call import-add-path,$(LOCAL_PATH)/../Classes)
@@ -97,6 +97,7 @@ $(call import-module,sqlite3)
 $(call import-module,ocgcore)
 $(call import-module,lua)
 $(call import-module,freetype)
+$(call import-module,miniaudio)
 $(call import-module,gframe/lzma)
 $(call import-module,gframe/spmemvfs)
 
