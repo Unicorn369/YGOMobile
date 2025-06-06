@@ -36,9 +36,6 @@ LOCAL_C_INCLUDES += $(LOCAL_PATH)/../irrlicht/source/Irrlicht/Android
 LOCAL_C_INCLUDES += $(LOCAL_PATH)/../Classes/freetype/include
 LOCAL_C_INCLUDES += $(LOCAL_PATH)/../Classes/sqlite3
 LOCAL_C_INCLUDES += $(LOCAL_PATH)/../Classes/libevent/include
-LOCAL_C_INCLUDES += $(LOCAL_PATH)/../Classes/libsndfile/include
-LOCAL_C_INCLUDES += $(LOCAL_PATH)/../Classes/mpg123/include
-LOCAL_C_INCLUDES += $(LOCAL_PATH)/../Classes/openal/include
 
 LOCAL_SRC_FILES := $(LOCAL_PATH)/android/android_tools.cpp \
 				$(LOCAL_PATH)/android/xstring.cpp \
@@ -72,9 +69,7 @@ LOCAL_SRC_FILES := $(LOCAL_PATH)/android/android_tools.cpp \
 				$(LOCAL_PATH)/../Classes/gframe/single_duel.cpp \
 				$(LOCAL_PATH)/../Classes/gframe/single_mode.cpp \
 				$(LOCAL_PATH)/../Classes/gframe/sound_manager.cpp \
-				$(LOCAL_PATH)/../Classes/gframe/sound_openal.cpp \
 				$(LOCAL_PATH)/../Classes/gframe/tag_duel.cpp \
-				$(LOCAL_PATH)/../Classes/gframe/utils.cpp \
 				$(LOCAL_PATH)/jni/cn_garymb_ygomobile_core_IrrlichtBridge.cpp
 
 LOCAL_LDLIBS := -lEGL -llog -lGLESv1_CM -lGLESv2 -landroid -lOpenSLES
@@ -86,9 +81,6 @@ LOCAL_STATIC_LIBRARIES += libcrypto_static
 LOCAL_STATIC_LIBRARIES += libevent2
 LOCAL_STATIC_LIBRARIES += libocgcore_static
 LOCAL_STATIC_LIBRARIES += liblua5.4
-LOCAL_STATIC_LIBRARIES += libsndfile
-LOCAL_STATIC_LIBRARIES += libmpg123
-LOCAL_STATIC_LIBRARIES += openal
 LOCAL_STATIC_LIBRARIES += clzma
 LOCAL_STATIC_LIBRARIES += cspmemvfs
 LOCAL_STATIC_LIBRARIES += sqlite3
@@ -104,9 +96,6 @@ $(call import-module,libevent)
 $(call import-module,sqlite3)
 $(call import-module,ocgcore)
 $(call import-module,lua)
-$(call import-module,libsndfile)
-$(call import-module,mpg123)
-$(call import-module,openal)
 $(call import-module,freetype)
 $(call import-module,gframe/lzma)
 $(call import-module,gframe/spmemvfs)
