@@ -116,7 +116,7 @@
 /* #undef EVENT__HAVE_GETHOSTBYNAME_R_6_ARG */
 
 /* Define to 1 if you have the `getifaddrs' function. */
-/* #undef EVENT__HAVE_GETIFADDRS */
+#define EVENT__HAVE_GETIFADDRS 1
 
 /* Define to 1 if you have the `getnameinfo' function. */
 #define EVENT__HAVE_GETNAMEINFO 1

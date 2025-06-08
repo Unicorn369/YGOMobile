@@ -118,7 +118,9 @@ LOCAL_CFLAGS := \
     -DOPUS_BUILD \
     -DUSE_ALLOCA \
     -DHAVE_LRINTF \
-    -DOP_HAVE_LRINTF \
+    -DOP_HAVE_LRINTF
+
+LOCAL_EXPORT_LDLIBS := -latomic
 
 LOCAL_EXPORT_C_INCLUDES := $(LOCAL_PATH) \
     $(LOCAL_PATH)/extras/decoders/libopus \

@@ -9,11 +9,20 @@ include $(BUILD_STATIC_LIBRARY)
 
 
 ####################################
+# Build android-ifaddrs
+include $(CLEAR_VARS)
+#LOCAL_C_INCLUDES :=
+LOCAL_MODULE := android_ifaddrs
+LOCAL_SRC_FILES := android/ifaddrs.c
+include $(BUILD_STATIC_LIBRARY)
+
+
+####################################
 # Build libevent2_core
 include $(CLEAR_VARS)
 
 LOCAL_MODULE:= libevent2_core
-LOCAL_STATIC_LIBRARIES := libevent2_pthreads
+LOCAL_STATIC_LIBRARIES := libevent2_pthreads android_ifaddrs
 
 LOCAL_SRC_FILES := \
     buffer.c \
@@ -51,7 +60,7 @@ include $(BUILD_STATIC_LIBRARY)
 include $(CLEAR_VARS)
 
 LOCAL_MODULE:= libevent2
-#LOCAL_STATIC_LIBRARIES := libevent2_pthreads
+LOCAL_STATIC_LIBRARIES := libevent2_pthreads android_ifaddrs
 
 LOCAL_SRC_FILES := \
     buffer.c \
